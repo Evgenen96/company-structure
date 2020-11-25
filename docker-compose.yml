@@ -3,12 +3,10 @@ services:
 
   postgres:
     image: postgres:12.4-alpine
-
+    container_name: postgres-004
     ports:
       - '5432:5432'
     network_mode: bridge
-    container_name: postgres-003
-
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'cofeok'
@@ -16,36 +14,43 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-
     ports:
       - '5433:80'
     network_mode: bridge
-
     external_links:
-      - postgres-003:postgres
-
+      - postgres-004:postgres
+    depends_on:
+      - postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: 'admin@example.com'
       PGADMIN_DEFAULT_PASSWORD: 'admin'
-
-  zookeeper:
-    image: zookeeper
-    ports:
-      - '2181:2181'
-    hostname: zookeeper
-    restart: always
+  
 
   kafka:
-    image: wurstmeister/kafka
-    ports:
-      - '9092:9092'
-    # hostname: kafka
-    depends_on:
-      - zookeeper
+    image: obsidiandynamics/kafka
+    container_name: kafka
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-    restart: always
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+    ports:
+      - "9092:9092"
+      - "2181:2181"
+    restart: unless-stopped
+  
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "kafka"   

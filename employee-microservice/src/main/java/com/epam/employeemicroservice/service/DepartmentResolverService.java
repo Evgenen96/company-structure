@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Provides the logic for the department snapshot
+ * in order to reduce the number of feign requests
+ */
 @Service
 public class DepartmentResolverService implements DepartmentClient {
 

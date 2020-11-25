@@ -42,7 +42,7 @@ public class DepartmentSnapshotServiceImpl implements DepartmentSnapshotService 
     @Override
     public DepartmentSnapshot save(DepartmentSnapshot theDomain) {
 
-        logger.info("Refreshing department the snapshot");
+        logger.info("Refreshing the department snapshot");
 
         return departmentSnapshotRepository.save(theDomain);
     }

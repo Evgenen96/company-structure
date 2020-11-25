@@ -21,7 +21,7 @@ public class KafkaConsumer {
     @KafkaListener(topics = "DEPARTMENTS", groupId = "default_group")
     public void consume(Long message) {
 
-        logger.info("Consumed new message on topic 'DEPARTMENTS'" + message);
+        logger.info("Consumed new message on topic 'DEPARTMENTS' " + message);
         changedDepartments.add(message);
     }
 }
