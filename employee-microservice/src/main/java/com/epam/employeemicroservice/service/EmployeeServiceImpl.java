@@ -6,7 +6,6 @@ import com.epam.employeemicroservice.entity.JobTitle;
 import com.epam.employeemicroservice.exception.EmployeeNotFoundException;
 import com.epam.employeemicroservice.exception.EmptyResultException;
 import com.epam.employeemicroservice.exception.ResourceNotFoundException;
-import com.epam.employeemicroservice.feignclient.DepartmentClient;
 import com.epam.employeemicroservice.repository.EmployeeRepository;
 import com.epam.employeemicroservice.repository.JobTitleRepository;
 import com.epam.employeemicroservice.validation.EmployeeValidation;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
-    private JobTitleService jobTitleService;
+    private JobTitleRepository jobTitleRepository;
     private DepartmentResolverService departmentResolverService;
 
 
@@ -37,11 +36,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     public EmployeeServiceImpl(
             EmployeeRepository theEmployeeRepository,
-            JobTitleService theJobTitleService,
+            JobTitleRepository theJobTitleRepository,
             DepartmentResolverService theDepartmentResolverService) {
 
         this.employeeRepository = theEmployeeRepository;
-        this.jobTitleService = theJobTitleService;
+        this.jobTitleRepository = theJobTitleRepository;
         this.departmentResolverService = theDepartmentResolverService;
     }
 
@@ -160,7 +159,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         logger.info("Searching employees by filters");
 
-        JobTitle theJobTitle = jobTitleService.findJobTitleByName(jobTitle);
+        JobTitle theJobTitle = jobTitleRepository.findJobTitleByTitle(jobTitle);
         List<Employee> employees =
                 employeeRepository.findEmployeesByLastNameAndFirstNameOrJobTitle(lastName, firstName, theJobTitle);
 
@@ -213,7 +212,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return createEmployeeDTO(employee);
     }
 
-    @Transactional
     private EmployeeDTO findManagerByDepartmentId(long departmentId, String departmentName) {
 
         logger.info("Searching for manager by department #" + departmentId);
@@ -292,7 +290,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setDismissalDate(null);
         }
 
-        JobTitle jobTitle = jobTitleService.findJobTitleByName(employeeDTO.getJobTitle());
+        JobTitle jobTitle = jobTitleRepository.findJobTitleByTitle(employeeDTO.getJobTitle());
         employee.setJobTitle(jobTitle);
 
         employee.setSalary(employeeDTO.getSalary());

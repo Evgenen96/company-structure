@@ -235,7 +235,5 @@ class DepartmentServiceImplTest {
         assertThrows(DepartmentNotFoundException.class,
                 () -> departmentService.sumEmployeeSalaryById(1L));
 
-//        assertThrows(DepartmentNotFoundException.class,
-//                () -> departmentService.transferEmployeesFromIdToNewId(1L, 2L));
     }
 }
