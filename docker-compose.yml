@@ -1,0 +1,51 @@
+version: '3'
+services:
+
+  postgres:
+    image: postgres:12.4-alpine
+
+    ports:
+      - '5432:5432'
+    network_mode: bridge
+    container_name: postgres-003
+
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'cofeok'
+      POSTGRES_DB: 'company_structure'
+
+  pgadmin:
+    image: dpage/pgadmin4
+
+    ports:
+      - '5433:80'
+    network_mode: bridge
+
+    external_links:
+      - postgres-003:postgres
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@example.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
+
+  zookeeper:
+    image: zookeeper
+    ports:
+      - '2181:2181'
+    hostname: zookeeper
+    restart: always
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - '9092:9092'
+    # hostname: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    restart: always

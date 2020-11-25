@@ -1,0 +1,62 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet author="Eugene" id="013">
+        <sql dbms="postgres"
+             splitStatements="true"
+             stripComments="true">TRUNCATE TABLE employee RESTART IDENTITY
+        </sql>
+    </changeSet>
+
+    <changeSet author="Eugene" id="014">
+        <loadData
+                file="csv/employee.csv"
+                quotchar="'"
+                schemaName="public"
+                separator=";"
+                tableName="employee">
+            <column header="last_name"
+                    name="last_name"
+                    type="STRING"/>
+            <column header="first_name"
+                    name="first_name"
+                    type="STRING"/>
+            <column header="patronymic"
+                    name="patronymic"
+                    type="STRING"/>
+            <column header="gender"
+                    name="gender"
+                    type="STRING"/>
+            <column header="date_of_birth"
+                    name="date_of_birth"
+                    type="DATE"/>
+            <column header="phone"
+                    name="phone"
+                    type="STRING"/>
+            <column header="email"
+                    name="email"
+                    type="STRING"/>
+            <column header="hiring_date"
+                    name="hiring_date"
+                    type="DATE"/>
+            <column header="dismissal_date"
+                    name="dismissal_date"
+                    type="DATE"/>
+            <column header="job_title_id"
+                    name="job_title_id"
+                    type="NUMERIC"/>
+            <column header="department_id"
+                    name="department_id"
+                    type="NUMERIC"/>
+            <column header="salary"
+                    name="salary"
+                    type="NUMERIC"/>
+            <column header="manager"
+                    name="manager"
+                    type="BOOLEAN"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
