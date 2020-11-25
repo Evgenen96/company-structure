@@ -5,31 +5,31 @@
 # Run
 
 ## Run Postgres
- `docker-compose -f run-postgres.yml`
+ `docker-compose up`
 ## Create and Populate DB (liquibase)
  `cd company-database`
 
  `mvn spring-boot:run`
 ## Run Discovery Server (eureka)
- `cd ../discovery-server`
+ `cd discovery-server`
 
  `mvn spring-boot:run`
 ## Run Services 
- `cd ../deparment-service`
+ `cd deparment-service`
 
  `mvn spring-boot:run`
 
- `cd ../employee-service`
+ `cd employee-service`
  
  `mvn spring-boot:run`
 
  
 ## Run Gateway (zuul) 
- `cd ../api-gateway`
+ `cd api-gateway`
 
  `mvn spring-boot:run`
 
-# Access points
+# Access
 
 * postgres: `localhost:5432`
 * pgadmin4: `localhost:5433`
@@ -37,4 +37,5 @@
 * department-service REST API: `localhost:8111/department-service/api/departments`
 * employee-service REST API: `localhost:8111/employee-service/api/employees`
 * eureka discovery server: `localhost:8761`
+* kafdrop `locahost:9000`
 
