@@ -3,7 +3,6 @@ package com.epam.departmentmicroservice.controller;
 import com.epam.departmentmicroservice.dto.DepartmentDTO;
 import com.epam.departmentmicroservice.exception.InvalidParametersException;
 import com.epam.departmentmicroservice.kafka.KafkaTopics;
-import com.epam.departmentmicroservice.kafka.departmenttopic.DepartmentTopicMessages;
 import com.epam.departmentmicroservice.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,14 +18,14 @@ import java.util.Set;
 public class DepartmentController {
 
     private DepartmentService departmentService;
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, Long> kafkaTemplate;
 
     private final String DEPARTMENT_TOPIC = KafkaTopics.DEPARTMENTS.name();
 
     @Autowired
     public DepartmentController(
             DepartmentService theDepartmentService,
-            KafkaTemplate theKafkaTemplate) {
+            KafkaTemplate<String, Long> theKafkaTemplate) {
 
         departmentService = theDepartmentService;
         kafkaTemplate = theKafkaTemplate;
@@ -53,7 +52,7 @@ public class DepartmentController {
 
         departmentDTO = departmentService.save(departmentDTO);
 
-        kafkaTemplate.send(DEPARTMENT_TOPIC, DepartmentTopicMessages.ADDED.name());
+        kafkaTemplate.send(DEPARTMENT_TOPIC, departmentDTO.getDepartmentId());
 
         return new ResponseEntity<>(departmentDTO, HttpStatus.CREATED);
     }
@@ -65,7 +64,7 @@ public class DepartmentController {
 
         DepartmentDTO renamedDepartmentDTO = departmentService.renameDepartment(departmentId, departmentName);
 
-        kafkaTemplate.send(DEPARTMENT_TOPIC, DepartmentTopicMessages.RENAMED.name());
+        kafkaTemplate.send(DEPARTMENT_TOPIC, departmentId);
 
         return renamedDepartmentDTO;
     }
@@ -75,7 +74,7 @@ public class DepartmentController {
 
         departmentService.deleteById(departmentId);
 
-        kafkaTemplate.send(DEPARTMENT_TOPIC, DepartmentTopicMessages.DELETED.name());
+        kafkaTemplate.send(DEPARTMENT_TOPIC, departmentId);
 
         return "The department is successfully deleted";
     }

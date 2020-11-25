@@ -1,17 +1,15 @@
 package com.epam.employeemicroservice.entity;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "department_snapshot")
 public class DepartmentSnapshot {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "department_snapshot_id")
-    private Long departmentId;
-
     @Column(name = "id", unique = true)
     private Long id;
 
@@ -43,21 +41,5 @@ public class DepartmentSnapshot {
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DepartmentSnapshot that = (DepartmentSnapshot) o;
-        return Objects.equals(departmentId, that.departmentId) &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(departmentId, id, name);
-    }
-
 
 }

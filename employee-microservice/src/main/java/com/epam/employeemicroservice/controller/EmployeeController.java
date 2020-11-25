@@ -1,6 +1,7 @@
 package com.epam.employeemicroservice.controller;
 
 import com.epam.employeemicroservice.dto.EmployeeDTO;
+import com.epam.employeemicroservice.service.DepartmentSnapshotService;
 import com.epam.employeemicroservice.service.EmployeeService;
 import com.epam.employeemicroservice.validation.EmployeeValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
+
+    @Autowired
+    DepartmentSnapshotService departmentSnapshotService;
 
     private EmployeeService employeeService;
 

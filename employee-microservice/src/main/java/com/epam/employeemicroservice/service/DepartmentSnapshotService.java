@@ -1,9 +1,20 @@
 package com.epam.employeemicroservice.service;
 
+import com.epam.employeemicroservice.entity.DepartmentSnapshot;
+
+import java.util.Optional;
+
 public interface DepartmentSnapshotService {
 
-    String getNameById(Long id);
+    Optional<String> getNameById(Long id);
 
-    Long getIdByName(String name);
+    Optional<Long> getIdByName(String name);
+
+    DepartmentSnapshot save(DepartmentSnapshot departmentSnapshot);
+
+    void deleteById(Long id);
+
+    void deleteByName(String name);
+
 
 }

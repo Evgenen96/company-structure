@@ -23,10 +23,8 @@ public class DepartmentDTO {
 
     private Long departmentId;
 
-    @NotNull
     private String name;
 
-    @NotNull
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(

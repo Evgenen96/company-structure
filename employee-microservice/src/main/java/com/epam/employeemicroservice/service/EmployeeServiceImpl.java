@@ -27,20 +27,21 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
-    private JobTitleRepository jobTitleRepository;
-    private DepartmentClient departmentClient;
+    private JobTitleService jobTitleService;
+    private DepartmentResolverService departmentResolverService;
+
 
     static final Logger logger = LogManager.getLogger(EmployeeServiceImpl.class);
 
     @Autowired
     public EmployeeServiceImpl(
             EmployeeRepository theEmployeeRepository,
-            JobTitleRepository theJobTitleRepository,
-            DepartmentClient theDepartmentClient) {
+            JobTitleService theJobTitleService,
+            DepartmentResolverService theDepartmentResolverService) {
 
         this.employeeRepository = theEmployeeRepository;
-        this.jobTitleRepository = theJobTitleRepository;
-        this.departmentClient = theDepartmentClient;
+        this.jobTitleService = theJobTitleService;
+        this.departmentResolverService = theDepartmentResolverService;
     }
 
     @Override
@@ -153,7 +154,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         logger.info("Searching employees by filters");
 
-        JobTitle theJobTitle = jobTitleRepository.findJobTitleByTitle(jobTitle);
+        JobTitle theJobTitle = jobTitleService.findJobTitleByName(jobTitle);
         List<Employee> employees =
                 employeeRepository.findEmployeesByLastNameAndFirstNameOrJobTitle(lastName, firstName, theJobTitle);
 
@@ -228,7 +229,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         logger.info("Searching for manager by department name = " + departmentName);
 
         return findManagerByDepartmentId(
-                departmentClient.findDepartmentIdByDepartmentName(departmentName), departmentName);
+                departmentResolverService.findDepartmentIdByDepartmentName(departmentName), departmentName);
     }
 
     @Override
@@ -247,7 +248,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee theEmployee = employeeRepository.findById(theEmployeeId).orElseThrow(
                 () -> new EmployeeNotFoundException(
                         "The employee #" + theEmployeeId + " is not found"));
-        String theDepartmentName = departmentClient.findDepartmentNameByDepartmentId(departmentId);
+        String theDepartmentName = departmentResolverService.findDepartmentNameByDepartmentId(departmentId);
 
         if (!theDepartmentName.equals("Department is not found")) {
 
@@ -285,14 +286,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setDismissalDate(null);
         }
 
-        JobTitle jobTitle = jobTitleRepository.findJobTitleByTitle(employeeDTO.getJobTitle());
+        JobTitle jobTitle = jobTitleService.findJobTitleByName(employeeDTO.getJobTitle());
         employee.setJobTitle(jobTitle);
 
         employee.setSalary(employeeDTO.getSalary());
         employee.setManager(employeeDTO.getManager());
 
         Long departmentId =
-                departmentClient.findDepartmentIdByDepartmentName(employeeDTO.getDepartmentName());
+                departmentResolverService.findDepartmentIdByDepartmentName(employeeDTO.getDepartmentName());
 
         if (departmentId != null) {
             employee.setDepartmentId(departmentId);
@@ -310,7 +311,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return new EmployeeDTO(
                 employee,
-                departmentClient.findDepartmentNameByDepartmentId(employee.getDepartmentId()));
+                departmentResolverService.findDepartmentNameByDepartmentId(employee.getDepartmentId()));
     }
 
     private EmployeeDTO createEmployeeDTO(Employee employee, Map<Long, String> departmentCache) {
@@ -323,7 +324,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (departmentName == null) {
 
-            departmentName = departmentClient.findDepartmentNameByDepartmentId(employee.getDepartmentId());
+            departmentName = departmentResolverService.findDepartmentNameByDepartmentId(employee.getDepartmentId());
             departmentCache.put(employee.getDepartmentId(), departmentName);
 
             return new EmployeeDTO(employee, departmentName);

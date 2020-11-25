@@ -10,4 +10,6 @@
     <include file="db/changelog/changelog-v1.2-populate-job_title.xml"/>
     <include file="db/changelog/changelog-v1.3-populate-department.xml"/>
     <include file="db/changelog/changelog-v1.4-populate-employee.xml"/>
+    <include file="db/changelog/changelog-v1.5-divide-on-microservices.xml"/>
+    <include file="db/changelog/changelog-v1.6-add-table-department-snapshot.xml"/>
 </databaseChangeLog>

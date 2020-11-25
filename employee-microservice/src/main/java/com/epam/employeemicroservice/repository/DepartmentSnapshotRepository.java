@@ -13,4 +13,7 @@ public interface DepartmentSnapshotRepository extends JpaRepository<DepartmentSn
 
     @Query("SELECT d.id FROM DepartmentSnapshot d WHERE d.name = ?1")
     Long getIdByName(String name);
+
+    @Query("DELETE FROM DepartmentSnapshot d WHERE d.name = ?1")
+    void deleteByName(String name);
 }
