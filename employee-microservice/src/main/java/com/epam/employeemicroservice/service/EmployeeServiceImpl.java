@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = theEmployeeRepository;
         this.jobTitleService = theJobTitleService;
         this.departmentResolverService = theDepartmentResolverService;
+    }
+
+    @PostConstruct
+    private void clearDepartmentSnapshot() {
+        departmentResolverService.clearDepartmentSnapshot();
     }
 
     @Override

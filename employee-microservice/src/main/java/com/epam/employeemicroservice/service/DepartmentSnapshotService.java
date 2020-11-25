@@ -16,5 +16,7 @@ public interface DepartmentSnapshotService {
 
     void deleteByName(String name);
 
+    void deleteAll();
+
 
 }

@@ -11,15 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
-
-    @Autowired
-    DepartmentSnapshotService departmentSnapshotService;
 
     private EmployeeService employeeService;
 

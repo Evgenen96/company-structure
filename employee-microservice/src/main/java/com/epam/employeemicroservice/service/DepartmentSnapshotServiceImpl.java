@@ -59,7 +59,15 @@ public class DepartmentSnapshotServiceImpl implements DepartmentSnapshotService 
     public void deleteByName(String name) {
 
         logger.info("Deleting department from the snapshot");
-        
+
         departmentSnapshotRepository.deleteByName(name);
+    }
+
+    @Override
+    public void deleteAll() {
+
+        logger.info("Cleared the snapshot");
+
+        departmentSnapshotRepository.deleteAll();
     }
 }

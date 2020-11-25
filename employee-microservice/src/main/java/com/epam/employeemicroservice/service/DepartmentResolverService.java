@@ -108,4 +108,9 @@ public class DepartmentResolverService implements DepartmentClient {
 
         return departmentId;
     }
+
+    public void clearDepartmentSnapshot() {
+
+        departmentSnapshotService.deleteAll();
+    }
 }
