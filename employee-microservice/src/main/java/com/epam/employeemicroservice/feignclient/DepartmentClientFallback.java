@@ -50,6 +50,6 @@ public class DepartmentClientFallback implements DepartmentClient {
 
         logger.error(cause);
 
-        return null;
+        return 0L;
     }
 }

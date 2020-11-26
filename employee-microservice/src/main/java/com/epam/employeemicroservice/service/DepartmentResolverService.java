@@ -13,15 +13,20 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Provides the logic for the department snapshot
- * in order to reduce the number of feign requests
+ * Provides the work logic for the department snapshot
+ * in order to reduce the number of feign requests.
+ * <p> Simply put, checks if there any kafka messages (in Set changedDepartments) which mean
+ * that particular department was renamed or deleted.
+ * <p> If changes are not detected, then it tries to find data from the {@link DepartmentSnapshot}.
+ * <p> If fails then it makes a request by feign client ({@link DepartmentClient}).
  */
 @Service
 public class DepartmentResolverService implements DepartmentClient {
 
     private DepartmentClient departmentClient;
     private DepartmentSnapshotService departmentSnapshotService;
-    private Set<Long> changedDepartments;
+    /** Storing kafka messages here */
+    private Set<Long> changedDepartmentsFromKafka;
 
     static final Logger logger = LogManager.getLogger(DepartmentResolverService.class);
 
@@ -30,11 +35,11 @@ public class DepartmentResolverService implements DepartmentClient {
     public DepartmentResolverService(
             DepartmentClient theDepartmentClient,
             DepartmentSnapshotService theDepartmentSnapshotService,
-            Set<Long> theChangeDepartments) {
+            Set<Long> theChangedDepartments) {
 
         this.departmentClient = theDepartmentClient;
         this.departmentSnapshotService = theDepartmentSnapshotService;
-        this.changedDepartments = theChangeDepartments;
+        this.changedDepartmentsFromKafka = theChangedDepartments;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class DepartmentResolverService implements DepartmentClient {
     @Override
     public String findDepartmentNameByDepartmentId(Long departmentId) {
 
-        boolean isChangesDetected = changedDepartments.contains(departmentId);
+        boolean isChangesDetected = changedDepartmentsFromKafka.contains(departmentId);
 
         if (!isChangesDetected) {
 
@@ -74,7 +79,7 @@ public class DepartmentResolverService implements DepartmentClient {
         departmentSnapshotService.save(new DepartmentSnapshot(departmentId, searchedDepartmentName));
 
         if (isChangesDetected) {
-            changedDepartments.remove(departmentId);
+            changedDepartmentsFromKafka.remove(departmentId);
         }
 
         return searchedDepartmentName;
@@ -87,7 +92,7 @@ public class DepartmentResolverService implements DepartmentClient {
         boolean isChangesDetected = false;
 
         if (possibleDepartmentId.isPresent()) {
-            isChangesDetected = changedDepartments.contains(possibleDepartmentId.get());
+            isChangesDetected = changedDepartmentsFromKafka.contains(possibleDepartmentId.get());
             if (!isChangesDetected) {
                 return possibleDepartmentId.get();
             } else {
@@ -100,14 +105,14 @@ public class DepartmentResolverService implements DepartmentClient {
         logger.info("Fetching department id from department microservice");
 
         Long departmentId = departmentClient.findDepartmentIdByDepartmentName(departmentName);
-        if (departmentId == null) {
+        if (departmentId == 0L) {
             departmentSnapshotService.deleteByName(departmentName);
             return departmentId;
         }
         departmentSnapshotService.save(new DepartmentSnapshot(departmentId, departmentName));
 
         if (isChangesDetected) {
-            changedDepartments.remove(departmentId);
+            changedDepartmentsFromKafka.remove(departmentId);
         }
 
         return departmentId;

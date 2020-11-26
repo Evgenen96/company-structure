@@ -41,8 +41,12 @@ public class KafkaConfiguration {
         return factory;
     }
 
+    /**
+     * Storing consumed kafka messages
+     * @return
+     */
     @Bean
-    public Set<Long> changedDepartments() {
+    public Set<Long> changedDepartmentsFromKafka() {
 
         return new HashSet<>();
     }

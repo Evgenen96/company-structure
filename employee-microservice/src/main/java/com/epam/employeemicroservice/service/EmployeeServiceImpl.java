@@ -70,7 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDTO findById(Long theId) {
 
-        logger.info("Fetching employee " + theId + " from database");
+        logger.info("Fetching employee #" + theId + " from database");
 
         Optional<Employee> result = employeeRepository.findById(theId);
 
@@ -143,7 +143,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void deleteById(Long theId) {
 
-        logger.info("Deleting employee " + theId + " from database");
+        logger.info("Deleting employee #" + theId + " from database");
 
         if (employeeRepository.findById(theId).isPresent()) {
             employeeRepository.deleteById(theId);
@@ -200,6 +200,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDTO findManagerByDepartmentId(long departmentId) {
 
+        if (departmentId == 0L) {
+            throw new ResourceNotFoundException(
+                    "The department was not found"
+            );
+        }
+
         logger.info("Searching for manager by department #" + departmentId);
 
         Employee employee = employeeRepository.findManagerByDepartmentId(departmentId);
@@ -213,6 +219,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private EmployeeDTO findManagerByDepartmentId(long departmentId, String departmentName) {
+
+        if (departmentId == 0L) {
+            throw new ResourceNotFoundException(
+                    "The department '" + departmentName + "' was not found"
+            );
+        }
 
         logger.info("Searching for manager by department #" + departmentId);
 
@@ -299,7 +311,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long departmentId =
                 departmentResolverService.findDepartmentIdByDepartmentName(employeeDTO.getDepartmentName());
 
-        if (departmentId != null) {
+        if (departmentId != 0L) {
             employee.setDepartmentId(departmentId);
         } else {
             throw new ResourceNotFoundException(
