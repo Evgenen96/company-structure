@@ -1,10 +1,10 @@
-# company-structure-microservices
+# company-structure-kafka
 
 >status: `ready`
 
 # Run
 
-## Run Postgres
+## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop)
  `docker-compose up`
 ## Create and Populate DB (liquibase)
  `cd company-database`
@@ -34,8 +34,8 @@
 * postgres: `localhost:5432`
 * pgadmin4: `localhost:5433`
 * rest-api swagger documentation: `localhost:8111/swagger-ui.html`
-* department-service REST API: `localhost:8111/department-service/api/departments`
-* employee-service REST API: `localhost:8111/employee-service/api/employees`
+* department-service REST API: `localhost:8111/department-service/api/departments` or directly `localhost:8082/api/departments`
+* employee-service REST API: `localhost:8111/employee-service/api/employees` or directly `localhost:8081/api/employees`
 * eureka discovery server: `localhost:8761`
 * kafdrop `locahost:9000`
 
