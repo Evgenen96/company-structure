@@ -4,8 +4,8 @@
 
 # Run
 
-## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop)
- `docker-compose up`
+## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop, filebeat+elk)
+ `docker-compose up [-d]`
 ## Create and Populate DB (liquibase)
  `cd company-database`
 
@@ -38,4 +38,6 @@
 * employee-service REST API: `localhost:8111/employee-service/api/employees` or directly `localhost:8081/api/employees`
 * eureka discovery server: `localhost:8761`
 * kafdrop `locahost:9000`
+* kibana `localhost:5601`
+* elasticsearch `localhost:9200`
 
