@@ -2,7 +2,8 @@
 <Configuration status="WARN" monitorInterval="30">
     <Properties>
         <Property name="LOG_PATTERN">
-            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+<!--            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} -&#45;&#45; [%15.15t] %-40.40c{1.} : %m%n%ex-->
+            %d{yyy-MM-dd HH:mm:ss.SSS} [%5p] [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-Span-Export}] - [%15.15t] %-40.40c{1.} : %m%n%ex
         </Property>
     </Properties>
     <Appenders>
