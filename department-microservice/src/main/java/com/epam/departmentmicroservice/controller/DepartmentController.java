@@ -4,6 +4,7 @@ import com.epam.departmentmicroservice.dto.DepartmentDTO;
 import com.epam.departmentmicroservice.exception.InvalidParametersException;
 import com.epam.departmentmicroservice.kafka.KafkaTopics;
 import com.epam.departmentmicroservice.service.DepartmentService;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +32,23 @@ public class DepartmentController {
         kafkaTemplate = theKafkaTemplate;
     }
 
+    @Timed(
+            value = "monitoring.departments.findall.request",
+            histogram = true,
+            percentiles = {0.95, 0.99},
+            extraTags = {"version", "1.0"}
+    )
     @GetMapping
     public List<DepartmentDTO> findAll() {
         return departmentService.findAll();
     }
 
+    @Timed(
+            value = "monitoring.departments.find.request",
+            histogram = true,
+            percentiles = {0.95, 0.99},
+            extraTags = {"version", "1.0"}
+    )
     @GetMapping("/{departmentId}")
     public DepartmentDTO findDepartment(@PathVariable long departmentId) {
 

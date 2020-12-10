@@ -133,6 +133,13 @@ services:
       # Port used for the Zipkin UI and HTTP Api
       - 9411:9411
 
+  prom:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
 networks:
   elk:
     driver: bridge

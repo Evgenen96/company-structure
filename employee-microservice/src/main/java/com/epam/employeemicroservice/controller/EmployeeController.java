@@ -1,9 +1,9 @@
 package com.epam.employeemicroservice.controller;
 
 import com.epam.employeemicroservice.dto.EmployeeDTO;
-import com.epam.employeemicroservice.service.DepartmentSnapshotService;
 import com.epam.employeemicroservice.service.EmployeeService;
 import com.epam.employeemicroservice.validation.EmployeeValidation;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,6 +25,12 @@ public class EmployeeController {
         employeeService = theEmployeeService;
     }
 
+    @Timed(
+            value = "monitoring.employees.findAll.request",
+            histogram = true,
+            percentiles = {0.95, 0.99},
+            extraTags = {"version", "1.0"}
+    )
     @GetMapping
     public List<EmployeeDTO> findAll() {
         return employeeService.findAll();
@@ -69,6 +74,12 @@ public class EmployeeController {
         return employeeService.dismissEmployee(employeeId, dismissalDate);
     }
 
+    @Timed(
+            value = "monitoring.employees.find.request",
+            histogram = true,
+            percentiles = {0.95, 0.99},
+            extraTags = {"version", "1.0"}
+    )
     @GetMapping("/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
 
