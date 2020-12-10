@@ -1,10 +1,12 @@
-# company-structure-kafka
+# company-structure
 
 >status: `ready`
 
+>zipkin' task: [ways of usage](zipkin-usage.md)
+
 # Run
 
-## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop, filebeat+elk)
+## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop, filebeat+elk, zipkin)
  `docker-compose up [-d]`
 ## Create and Populate DB (liquibase)
  `cd company-database`
@@ -40,4 +42,5 @@
 * kafdrop `locahost:9000`
 * kibana `localhost:5601`
 * elasticsearch `localhost:9200`
+* zipkin `localhost:9144`
 
