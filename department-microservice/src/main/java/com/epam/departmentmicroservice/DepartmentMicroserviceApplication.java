@@ -1,7 +1,9 @@
 package com.epam.departmentmicroservice;
 
 import feign.Logger;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -24,5 +26,13 @@ public class DepartmentMicroserviceApplication {
 	@Bean
 	Logger.Level feignLoggerLevel() {
 		return Logger.Level.BASIC;
+	}
+
+	@Bean
+	MeterRegistryCustomizer meterRegistryCustomizer(MeterRegistry meterRegistry) {
+		return meterRegistry1 -> {
+			meterRegistry.config()
+					.commonTags("department-service", "micrometer-monitoring");
+		};
 	}
 }

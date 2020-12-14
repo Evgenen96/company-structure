@@ -9,6 +9,8 @@ import com.epam.employeemicroservice.exception.ResourceNotFoundException;
 import com.epam.employeemicroservice.repository.EmployeeRepository;
 import com.epam.employeemicroservice.repository.JobTitleRepository;
 import com.epam.employeemicroservice.validation.EmployeeValidation;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private JobTitleRepository jobTitleRepository;
     private DepartmentResolverService departmentResolverService;
 
+    @Autowired
+    MeterRegistry registry;
+    Counter cacheHitCounter;
+    Counter cacheMissCounter;
+
 
     static final Logger logger = LogManager.getLogger(EmployeeServiceImpl.class);
 
@@ -47,6 +54,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @PostConstruct
     private void clearDepartmentSnapshot() {
         departmentResolverService.clearDepartmentSnapshot();
+        cacheHitCounter = Counter.builder("department.name.cache.hit.counter")
+                .description("indicates count of cache hit for department names")
+                .tag("cache", "hits")
+                .tag("version", "1.0")
+                .register(registry);
+        cacheMissCounter = Counter.builder("department.name.cache.miss.counter")
+                .description("indicates count of cache miss for department names")
+                .tag("cache", "misses")
+                .tag("version", "1.0")
+                .register(registry);
     }
 
     @Override
@@ -342,9 +359,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             departmentName = departmentResolverService.findDepartmentNameByDepartmentId(employee.getDepartmentId());
             departmentCache.put(employee.getDepartmentId(), departmentName);
-
+            cacheMissCounter.increment();
             return new EmployeeDTO(employee, departmentName);
         } else {
+            cacheHitCounter.increment();
             return new EmployeeDTO(employee, departmentName);
         }
     }

@@ -6,8 +6,11 @@
 
 # Run
 
-## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop, filebeat+elk, zipkin)
+## Run Distributed Services (postgres, pgadmin4, kafka, kafdrop, filebeat+elk, zipkin, prometheus)
  `docker-compose up [-d]`
+ 
+ config folder: `cd configs`
+ * to use prometheus change target ips to your host's one
 ## Create and Populate DB (liquibase)
  `cd company-database`
 
@@ -43,4 +46,5 @@
 * kibana `localhost:5601`
 * elasticsearch `localhost:9200`
 * zipkin `localhost:9144`
+* prometheus `localhost:9090`
 
